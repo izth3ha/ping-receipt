@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Send a Receipt Message</title>
-    {{-- Vite assets disabled for development --}}{{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
     <style>
         body {
             background-color: #d8f6ed;
-            background-image: radial-gradient(circle at 15% 85%, hsla(318, 80%, 97%, 1) 19%, transparent 84%), radial-gradient(circle at 31% 1%, hsla(161.470588, 23529412, 99%, 84%, 1) 12%, transparent 85%), radial-gradient(circle at 88% 87%, hsla(163, 90%, 78%, 1) 14%, transparent 90%);
-            background-blend-mode: normal, normal, normal, normal;
+            background-image: radial-gradient(circle at 15% 85%, hsla(318, 80%, 97%, 1) 19%, transparent 84%), radial-gradient(circle at 31% 1%, hsla(161, 99%, 84%, 1) 12%, transparent 85%);
+            background-blend-mode: normal, normal;
         }
         .receipt {
             position: relative;
@@ -46,7 +45,6 @@
 
         <div class="relative bg-white receipt shadow-2xl pt-6 pb-6">
             <div class="relative z-10">
-
                 <div class="px-6 pb-4 border-b-2 border-gray-300 border-dashed">
                     <div class="text-center">
                         <div class="text-2xl font-bold mb-0 tracking-wide">PING.UCHE.CA</div>
@@ -55,15 +53,13 @@
                 </div>
 
                 <div class="p-4">
-                    <div class="text-xs text-gray-600 mb-1">
-                        <div class="flex justify-between">
-                            <span>TIMESTAMP:</span>
-                            <span id="current-time">{{ $timestamp }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>TRANSACTION #:</span>
-                            <span>{{ $transaction }}</span>
-                        </div>
+                    <div class="text-xs text-gray-600 mb-1 flex justify-between">
+                        <span>TIMESTAMP:</span>
+                        <span id="current-time">{{ $timestamp }}</span>
+                    </div>
+                    <div class="text-xs text-gray-600 mb-1 flex justify-between">
+                        <span>TRANSACTION #:</span>
+                        <span>{{ $transaction }}</span>
                     </div>
 
                     <div class="border-b border-gray-300 border-dashed my-3 py-3">
@@ -77,13 +73,12 @@
                                     rows="6"
                                     maxlength="1024"
                                     placeholder="Type your message here..."
-                                    class="w-[42ch] font-mono p-2 box-content text-sm border border-gray-300 rounded focus:outline-none focus:ring focus:ring-gray-700 focus:border-transparent resize-none"
-                                    oninput="updateCharCount()"
+                                    class="w-[42ch] font-mono p-2 box-content text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 resize-none"
                                 >{{ old('message') }}</textarea>
                                 <input type="hidden" id="transaction" name="transaction" value="{{ $transaction }}">
                             </div>
 
-                            <div class="flex justify-between items-center text-xs">
+                            <div class="flex justify-between items-center text-xs mt-3">
                                 <span class="text-gray-500">MAX: 1024 CHARS</span>
                                 <span id="char-count" class="font-bold">0 / 1024</span>
                             </div>
@@ -107,14 +102,14 @@
                 </div>
             </div>
         </div>
+
         <div class="text-center text-xs py-4 opacity-50">
-            <p class="mb-1">Basic text only (no emojis, special symbols)</p>
+            <p>Basic text only (no emojis, special symbols)</p>
             <p>Printer text width is 42 characters wide</p>
         </div>
     </div>
 
     <script>
-        // Update character count
         function updateCharCount() {
             const textarea = document.getElementById('message');
             const charCount = document.getElementById('char-count');
@@ -132,6 +127,8 @@
                 charCount.classList.remove('text-red-600', 'text-yellow-600');
             }
         }
+
+        document.getElementById('message').addEventListener('input', updateCharCount);
     </script>
 </body>
 </html>
