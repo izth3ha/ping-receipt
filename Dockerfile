@@ -1,4 +1,4 @@
-FROM php:8.4-cli
+FROM php:8.4-fpm
 
 ADD ./ /srv/
 
@@ -17,10 +17,13 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN npm install \
+    && npm run build \
+    && npm cache clean --force
+
 RUN usermod -a -G lp root
 
-RUN mkdir -p /srv/database && chown -R root:root /srv/database
+RUN mkdir -p /srv/database /srv/storage /srv/bootstrap/cache \
+    && chown -R root:root /srv/database /srv/storage /srv/bootstrap/cache
 
-EXPOSE 8000
-
-CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 9000
