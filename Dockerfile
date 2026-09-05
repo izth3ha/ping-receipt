@@ -11,7 +11,7 @@ RUN apt-get -y update \
 
 RUN usermod -a -G lp root
 
-USER root
+RUN mkdir -p /srv/database && chown -R root:root /srv/database
 
 EXPOSE 8000
 

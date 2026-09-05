@@ -5,7 +5,9 @@ services:
     ports:
       - "8763:8000"
     volumes:
-      - ./database/database.sqlite:/srv/database/database.sqlite
+      - ./database:/srv/database
       - /dev/usb/lp0:/dev/usb/lp0
-    env_file:
-      - .env
+    environment:
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/srv/database/database.sqlite
+    user: root
