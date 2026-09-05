@@ -8,20 +8,22 @@
     <style>
         body {
             background-color: #d8f6ed;
-            background-image: radial-gradient(circle at 15% 85%, hsla(318, 80%, 97%, 1) 19%, transparent 84%), radial-gradient(circle at 31% 1%, hsla(161.47058823529412, 99%, 84%, 1) 12%, transparent 85%), radial-gradient(circle at 88% 87%, hsla(163, 90%, 78%, 1) 3.6400864520532363%, transparent 75.20902830975928%), radial-gradient(circle at 30% 27%, hsla(314, 91%, 59%, 1) 14%, transparent 90%);
+            background-image: radial-gradient(circle at 15% 85%, hsla(318, 80%, 97%, 1) 19%, transparent 84%), radial-gradient(circle at 31% 1%, hsla(161.470588, 23529412, 99%, 84%, 1) 12%, transparent 85%), radial-gradient(circle at 88% 87%, hsla(163, 90%, 78%, 1) 14%, transparent 90%);
             background-blend-mode: normal, normal, normal, normal;
         }
-        .receipt:before {
+        .receipt {
+            position: relative;
+        }
+        .receipt::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('/images/paper.jpg') no-repeat center center;
-            background-size: 100%;
-            opacity: 0.5;
-            z-index: 2;
+            background: #ffffff;
+            opacity: 0.95;
+            z-index: 0;
         }
     </style>
 </head>
@@ -31,30 +33,27 @@
         <div class="mb-4 space-y-2">
             @session('success')
                 <div class="bg-teal-50 text-sm border border-teal-200 text-teal-700 px-4 py-3 rounded-lg flex items-center gap-2" role="alert">
-                    <span>😁 {{ session('success') }}</span>
+                    <span>{{ session('success') }}</span>
                 </div>
             @endsession
 
             @error('message')
                 <div class="bg-rose-50 text-sm border border-rose-200 text-rose-700 px-4 py-3 rounded-lg flex items-center gap-2" role="alert">
-                    <span>🙃 {{ $message }}</span>
+                    <span>{{ $message }}</span>
                 </div>
             @enderror
         </div>
 
-        {{-- Receipt Container --}}
         <div class="relative bg-white receipt shadow-2xl pt-6 pb-6">
             <div class="relative z-10">
 
-                {{-- Receipt Header --}}
                 <div class="px-6 pb-4 border-b-2 border-gray-300 border-dashed">
                     <div class="text-center">
                         <div class="text-2xl font-bold mb-0 tracking-wide">PING.UCHE.CA</div>
-                        <div class="text-xs text-gray-600 uppercase tracking-wider">Message for Isaiah Uche</div>
+                        <div class="text-xs text-gray-600 uppercase tracking-widest">Message for Isaiah Uche</div>
                     </div>
                 </div>
 
-                {{-- Receipt Body --}}
                 <div class="p-4">
                     <div class="text-xs text-gray-600 mb-1">
                         <div class="flex justify-between">
@@ -84,7 +83,6 @@
                                 <input type="hidden" id="transaction" name="transaction" value="{{ $transaction }}">
                             </div>
 
-                            {{-- Character Counter --}}
                             <div class="flex justify-between items-center text-xs">
                                 <span class="text-gray-500">MAX: 1024 CHARS</span>
                                 <span id="char-count" class="font-bold">0 / 1024</span>
@@ -92,15 +90,13 @@
                         </form>
                     </div>
 
-                    {{-- Receipt Footer Info --}}
                     <div class="text-xs text-gray-600 space-y-1 mb-4">
-                        <div class="text-center">***************************************</div>
+                        <div class="text-center">********************************</div>
                         <div class="text-center font-bold">THANKS FOR STOPPING BY</div>
                         <div class="text-center">Your message will be sent to my desk</div>
-                        <div class="text-center">***************************************</div>
+                        <div class="text-center">********************************</div>
                     </div>
 
-                    {{-- Submit Button --}}
                     <button
                         type="submit"
                         onClick="document.getElementById('messageForm').submit()"
@@ -126,7 +122,6 @@
 
             charCount.textContent = `${currentLength} / 1024`;
 
-            // Change color based on remaining characters
             if (currentLength > 900) {
                 charCount.classList.add('text-red-600');
                 charCount.classList.remove('text-yellow-600');
