@@ -28,7 +28,6 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex items-start md:items-center justify-center p-4 font-mono">
     <div class="w-full max-w-md">
-
         <div class="mb-4 space-y-2">
             @session('success')
                 <div class="bg-teal-50 text-sm border border-teal-200 text-teal-700 px-4 py-3 rounded-lg flex items-center gap-2" role="alert">
@@ -57,7 +56,7 @@
                         <span>TIMESTAMP:</span>
                         <span id="current-time">{{ $timestamp }}</span>
                     </div>
-                    <div class="text-xs text-gray-600 mb-1 flex justify-between">
+                    <div class="text-xs text-gray-600 mb-4 flex justify-between">
                         <span>TRANSACTION #:</span>
                         <span>{{ $transaction }}</span>
                     </div>
@@ -66,17 +65,17 @@
                         <form action="{{ route('send-message') }}" method="POST" class="space-y-3" id="messageForm">
                             @csrf
 
-                            <div class="flex items-center justify-center">
-                                <textarea
-                                    name="message"
-                                    id="message"
-                                    rows="6"
-                                    maxlength="1024"
-                                    placeholder="Type your message here..."
-                                    class="w-[42ch] font-mono p-2 box-content text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 resize-none"
-                                >{{ old('message') }}</textarea>
-                                <input type="hidden" id="transaction" name="transaction" value="{{ $transaction }}">
-                            </div>
+                            <textarea
+                                name="message"
+                                id="message"
+                                rows="6"
+                                maxlength="1024"
+                                placeholder="Type your message here..."
+                                class="w-full font-mono p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-transparent resize-none"
+                                oninput="updateCharCount()"
+                            >{{ old('message') }}</textarea>
+
+                            <input type="hidden" id="transaction" name="transaction" value="{{ $transaction }}">
 
                             <div class="flex justify-between items-center text-xs mt-3">
                                 <span class="text-gray-500">MAX: 1024 CHARS</span>
@@ -102,9 +101,8 @@
                 </div>
             </div>
         </div>
-
         <div class="text-center text-xs py-4 opacity-50">
-            <p>Basic text only (no emojis, special symbols)</p>
+            <p class="mb-1">Basic text only (no emojis, special symbols)</p>
             <p>Printer text width is 42 characters wide</p>
         </div>
     </div>
