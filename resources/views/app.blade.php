@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Send a Receipt Message</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Vite assets disabled for development --}}{{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
     <style>
         body {
             background-color: #d8f6ed;
