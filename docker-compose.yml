@@ -1,0 +1,11 @@
+services:
+  app:
+    build: .
+    container_name: ping-receipt
+    ports:
+      - "8763:8000"
+    volumes:
+      - ./database/database.sqlite:/srv/database/database.sqlite
+      - /dev/usb/lp0:/dev/usb/lp0
+    env_file:
+      - .env

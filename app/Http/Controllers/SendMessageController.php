@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Receipt;
+use Illuminate\Support\Facades\DB;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\Printer;
 
@@ -20,49 +21,60 @@ class SendMessageController extends Controller
 
         $request->validate([
             'message' => 'required|max:1024|regex:/^[\x00-\x7F\']*$/',
-            'transaction' => 'required|max:5|min:5'
-        ], [
-            'message.required' => 'You have to write something!',
-            'message.max' => 'How did you manage to write something that long?',
-            'message.regex' => 'Sorry, basic ascii characters only (bummer, I know).',
-            'transaction.required' => 'How did you remove the transaction? Put it back!',
-            'transaction.max' => 'What are you doing to the transaction?',
-            'transaction.min' => 'What are you doing to the transaction?',
+            'transaction' => 'required',
         ]);
 
-	    Receipt::create($request->only(['transaction', 'message']));
+        // Use database transaction with locking to prevent race conditions
+        $currentYear = now()->year;
+        $transactionNumber = DB::transaction(function () use ($currentYear) {
+            // Lock the latest receipt for this year to prevent concurrent modifications
+            $latestReceipt = Receipt::where('year', $currentYear)->orderBy('transaction_number', 'desc')->lockForUpdate()->first();
+            $nextNumber = $latestReceipt ? $latestReceipt->transaction_number + 1 : 1;
+
+            // Create the receipt with the new transaction number
+            Receipt::create([
+                'year' => $currentYear,
+                'transaction_number' => $nextNumber,
+                'message' => $message,
+            ]);
+
+            return $nextNumber;
+        });
 
         $connector = new FilePrintConnector('/dev/usb/lp0');
         $printer = new Printer($connector);
 
-        // let me know something's coming
+        // Let me know something's coming
         $printer->feed(1);
         sleep(1);
 
         $printer->setJustification(Printer::JUSTIFY_CENTER);
         $printer->setTextSize(2, 2);
         $printer->setEmphasis(true);
-        $printer->text("PING");
+        $printer->text("PING.UCHE.CA");
         $printer->feed(2);
         $printer->setTextSize(1, 1);
         $printer->setEmphasis(false);
-        $printer->text('MESSAGE FOR ANDREW SCHMELYUN');
+        $printer->text('MESSAGE FOR ISAIAH UCHE');
         $printer->feed(1);
 
         $printer->setJustification(Printer::JUSTIFY_LEFT);
         $printer->text(str_repeat('-', 42));
-
-        $printer->feed(2);
-        $printer->text('TIMESTAMP:' . str_repeat(' ', 15) . now()->format('m/d/y h:i A'));
         $printer->feed(1);
-        $printer->text('TRANSACTION #:' . str_repeat(' ', 23) . $request->transaction);
-        $printer->feed(4);
 
-        $printer->text($request->message);
+        $printer->text('TIMESTAMP: ' . now()->format('m/d/y h:i A'));
+        $printer->feed(1);
+
+        $printer->text('TRANSACTION #: ' . $currentYear . '-' . str_pad($transactionNumber, 6, '0', STR_PAD_LEFT));
+        $printer->feed(1);
+
+        $printer->text(str_repeat('-', 42));
+        $printer->feed(1);
+
+        $printer->text($message);
         $printer->feed(4);
 
         $printer->cut();
-        $printer->close();
 
         $request->session()->flash('success', 'Your message was sent successfully, woohoo!');
 

@@ -49,7 +49,7 @@
                 {{-- Receipt Header --}}
                 <div class="px-6 pb-4 border-b-2 border-gray-300 border-dashed">
                     <div class="text-center">
-                        <div class="text-2xl font-bold mb-0 tracking-wide">PING</div>
+                        <div class="text-2xl font-bold mb-0 tracking-wide">PING.UCHE.CA</div>
                         <div class="text-xs text-gray-600 uppercase tracking-wider">Message for Isaiah Uche</div>
                     </div>
                 </div>
